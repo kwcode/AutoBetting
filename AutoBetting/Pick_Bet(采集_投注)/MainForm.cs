@@ -21,7 +21,7 @@ namespace Ku.Forms
     {
         SynchronizationContext SysContext = null;
         private MessageDisplay md = null;
-        JJKit jjKit = new JJKit();
+        JJApiKit jjKit = new JJApiKit();
         public MainForm()
         {
 
@@ -77,6 +77,7 @@ namespace Ku.Forms
 
         }
         #endregion
+
         #region 线程任务
 
         private void DoTask()
@@ -106,6 +107,7 @@ namespace Ku.Forms
 
 
         #endregion
+
         #region 定时器
         private const int baseSecond = 58;
         int secondResult = 0;

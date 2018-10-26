@@ -36,7 +36,7 @@ namespace Ku.Forms.Kit
 
 
         #region 开始投注计划
-        public void Start(JJKit jjKit, List<OG1K3Entity> list, long currentIssueNo)
+        public void Start(JJApiKit jjKit, List<OG1K3Entity> list, long currentIssueNo)
         {
             OG1K3List = list;
             int res = GetPrevBettingResult(lastBetRecord.IssueNo, Type);
@@ -211,7 +211,7 @@ namespace Ku.Forms.Kit
         /// </summary>
         /// <param name="failNum">容错次数</param>
         /// <param name="repeatNum">重复次数</param>
-        public void BettingDaxiao(JJKit jjKit, long currentIssueNo, string valueNum, int money)
+        public void BettingDaxiao(JJApiKit jjKit, long currentIssueNo, string valueNum, int money)
         {
             if (currentIssueNo <= lastBetRecord.IssueNo)
             {

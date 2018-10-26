@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Ku.Forms
 {
-    public class JJKit
+    public class JJApiKit
     {
         private string Cookie = string.Empty;
         private long accountId = 0;
@@ -17,6 +17,8 @@ namespace Ku.Forms
         private string userName = string.Empty;
         private int requestFailCount = 0;
         private int requestMaxFailCount = 3;//请求允许次数 
+
+        #region 登陆账号 
         public bool Login(string uName, string pwd, string phone = "1540139107855")
         {
             userName = uName;
@@ -63,6 +65,13 @@ namespace Ku.Forms
             }
         }
 
+        #endregion
+
+        #region 得到抽奖的结果
+        /// <summary>
+        /// 得到抽奖的结果
+        /// </summary>
+        /// <returns></returns>
         public string GetLotteryOpenResult()
         {
             Ku.Common.HttpHelper http = new Common.HttpHelper();
@@ -92,6 +101,8 @@ namespace Ku.Forms
 
             }
         }
+
+        #endregion
 
         #region 投注
 

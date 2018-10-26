@@ -13,7 +13,7 @@ namespace Ku.Forms
     public class CommonTask : BaseTask
     {
         private string connString = string.Empty;
-        JJKit jjKit = new JJKit();
+        JJApiKit jjKit = new JJApiKit();
         public override void DoThreadTask()
         {
             connString = Ku.Common.ConfigHelper.GetConnectionStringValue("ConnString1");
