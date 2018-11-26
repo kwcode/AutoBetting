@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ku.Forms 
+namespace Ku.API.Enum
 {
     public enum JJBetEnum
     {

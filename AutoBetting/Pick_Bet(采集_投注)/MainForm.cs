@@ -1,4 +1,5 @@
 ﻿
+using Ku.API.Model;
 using Ku.Common;
 using Ku.Forms.DAL;
 using Ku.Forms.Kit;
@@ -192,7 +193,6 @@ namespace Ku.Forms
                     break;
                 case 15:
                 case 5:
-
                 default:
                     break;
             }
@@ -200,71 +200,52 @@ namespace Ku.Forms
             //msg(secondResult.ToString());
         }
 
-        private List<OG1K3Entity> GetPikcList()
-        {
-            List<OG1K3Entity> list = new List<OG1K3Entity>();
+        //private List<OG1K3Entity> GetPikcList()
+        //{
+        //    List<OG1K3Entity> list = new List<OG1K3Entity>();
 
-            //获取最新的抓取列表
-            string html = jjKit.GetLotteryOpenResult();
-            JsonResult jsonR = Util.DeserializeObject<JsonResult>(html);
-            string code = jsonR.code;
-            if (code == "success")
-            {
-                string D_Date = "";
-                Data data = jsonR.data;
-                Backdata backData = data.backData;
-                Lotteryopen[] lotteryopen = backData.lotteryOpen;
-                D_Date = backData.time;
-                foreach (Lotteryopen item in lotteryopen)
-                {
-                    OG1K3Entity entity = new OG1K3Entity();
-                    entity.openTime = item.openTime;
-                    entity.issueNo = item.issueNo;
-                    entity.daxiao = item.daxiao == "da" ? "大" : "小";
-                    entity.danshuang = item.danshuang == "dan" ? "单" : "双";
-                    entity.Count = item.count;
-                    entity.lotteryOpen = item.lotteryOpen;
-                    List<string> vList = Util.Split(",", item.lotteryOpen);
-                    string Value_1 = vList[0];
-                    string Value_2 = vList[1];
-                    string Value_3 = vList[2];
+        //    //获取最新的抓取列表
+        //    string html = jjKit.GetLotteryOpenResult();
+        //    JsonResult jsonR = Util.DeserializeObject<JsonResult>(html);
+        //    string code = jsonR.code;
+        //    if (code == "success")
+        //    {
+        //        string D_Date = "";
+        //        Data data = jsonR.data;
+        //        Backdata backData = data.backData;
+        //        Lotteryopen[] lotteryopen = backData.lotteryOpen;
+        //        D_Date = backData.time;
+        //        foreach (Lotteryopen item in lotteryopen)
+        //        {
+        //            OG1K3Entity entity = new OG1K3Entity();
+        //            entity.openTime = item.openTime;
+        //            entity.issueNo = item.issueNo;
+        //            entity.daxiao = item.daxiao == "da" ? "大" : "小";
+        //            entity.danshuang = item.danshuang == "dan" ? "单" : "双";
+        //            entity.Count = item.count;
+        //            entity.lotteryOpen = item.lotteryOpen;
+        //            List<string> vList = Util.Split(",", item.lotteryOpen);
+        //            string Value_1 = vList[0];
+        //            string Value_2 = vList[1];
+        //            string Value_3 = vList[2];
 
-                    #region 存档
-                    int isExist = OG1K3DAL.Instance.GetSingle(entity.issueNo);
-                    if (isExist == 0)
-                    {
-                        DBParamEntity[] pramsAdd =
-                            { 
-                                new DBParamEntity(){ FieldName="D_Date",Value=D_Date},
-                                new DBParamEntity(){ FieldName="openTime",Value=entity.openTime},
-                                new DBParamEntity(){ FieldName="issueNo",Value=entity.issueNo},
-                                new DBParamEntity(){ FieldName="daxiao",Value=entity.daxiao},
-                                new DBParamEntity(){ FieldName="danshuang",Value=entity.danshuang},
-                                new DBParamEntity(){ FieldName="Count",Value=entity.Count},
-                                new DBParamEntity(){ FieldName="Value_1",Value=entity.Value_1},
-                                new DBParamEntity(){ FieldName="Value_2",Value=Value_2},
-                                new DBParamEntity(){ FieldName="Value_3",Value=Value_3},
-                            };
-                        OG1K3DAL.Instance.Add(pramsAdd);
-                        msg("期数=" + entity.issueNo + ",值=" + item.lotteryOpen);
-                    }
-                    #endregion
 
-                    list.Add(entity);
-                }
-            }
-            else
-            {
-                if (jsonR.code == "nologin")
-                {
-                    msg("重新登陆");
-                    Login();
-                }
-                else { msg(jsonR.msg.ToString()); }
-            }
 
-            return list;
-        }
+        //            list.Add(entity);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (jsonR.code == "nologin")
+        //        {
+        //            msg("重新登陆");
+        //            Login();
+        //        }
+        //        else { msg(jsonR.msg.ToString()); }
+        //    }
+
+        //    return list;
+        //}
 
 
         #endregion
@@ -277,7 +258,30 @@ namespace Ku.Forms
         private void GoBetSingle()
         {
             //获取上一期的的结果
-            List<OG1K3Entity> list = GetPikcList();
+            List<JJOG1K3Result> list = jjKit.GetLotteryOpenList();
+            foreach (JJOG1K3Result item in list)
+            {
+                #region 存档
+                int isExist = OG1K3DAL.Instance.GetSingle(item.issueNo);
+                if (isExist == 0)
+                {
+                    DBParamEntity[] pramsAdd =
+                            { 
+                                new DBParamEntity(){ FieldName="D_Date",Value=item.D_Date},
+                                new DBParamEntity(){ FieldName="openTime",Value=item.openTime},
+                                new DBParamEntity(){ FieldName="issueNo",Value=item.issueNo},
+                                new DBParamEntity(){ FieldName="daxiao",Value=item.daxiao},
+                                new DBParamEntity(){ FieldName="danshuang",Value=item.danshuang},
+                                new DBParamEntity(){ FieldName="Count",Value=item.Count},
+                                new DBParamEntity(){ FieldName="Value_1",Value=item.Value_1},
+                                new DBParamEntity(){ FieldName="Value_2",Value=item.Value_2},
+                                new DBParamEntity(){ FieldName="Value_3",Value=item.Value_3},
+                            };
+                    OG1K3DAL.Instance.Add(pramsAdd);
+                    msg("期数=" + item.issueNo + ",值=" + item.lotteryOpen);
+                }
+                #endregion
+            }
             preIssueNo = Util.ConvertToInt64(list[0].issueNo);
             currentIssueNo = preIssueNo + 1;
             SysContext.Send(o => { lbissueNo.Text = "距" + currentIssueNo.ToString() + "期投注截止还有："; }, null);
@@ -285,6 +289,8 @@ namespace Ku.Forms
             if (currentIssueNo > preIssueNo)
             {
                 touzhuKit.Start(jjKit, list, currentIssueNo);
+                //获取账户余额
+                double UserBanlance = jjKit.GetUserBanlance();
             }
 
 

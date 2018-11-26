@@ -1,6 +1,9 @@
-﻿using Ku.Common;
+﻿using Ku.API.Enum;
+using Ku.API.Model;
+using Ku.Common;
 using Ku.Forms.DAL;
 using Ku.Forms.Model;
+using Ku.UIForm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +13,7 @@ namespace Ku.Forms.Kit
 {
     public class TouzhuKit
     {
-        private List<OG1K3Entity> OG1K3List = new List<OG1K3Entity>();
+        private List<JJOG1K3Result> OG1K3List = new List<JJOG1K3Result>();
         /// <summary>
         /// 错误历史投注记录
         /// 投注成功后，或暂停投注清空集合
@@ -20,23 +23,26 @@ namespace Ku.Forms.Kit
         /// 最后一次投注记录
         /// </summary>
         private TouzhuEntity lastBetRecord = new TouzhuEntity();
+        /// <summary>
+        /// 连续重复次数
+        /// </summary>
         private int RepeatSum = 100;
         public TouzhuTypeEnum Type { get; set; }
         /// <summary>
         /// 基础投注费用 
         /// </summary>
         public int BaseMoney { get; set; }
-         
+        private MessageDisplay _md;
         public TouzhuKit(TouzhuTypeEnum type, int repeatSum, int tzmoney)
         {
             Type = type;
             RepeatSum = repeatSum;
             BaseMoney = tzmoney;
+
         }
 
-
         #region 开始投注计划
-        public void Start(JJApiKit jjKit, List<OG1K3Entity> list, long currentIssueNo)
+        public void Start(JJApiKit jjKit, List<JJOG1K3Result> list, long currentIssueNo)
         {
             OG1K3List = list;
             int res = GetPrevBettingResult(lastBetRecord.IssueNo, Type);
@@ -55,6 +61,7 @@ namespace Ku.Forms.Kit
             switch (res)
             {
                 case -1://未找到
+                    lastBetRecord = new TouzhuEntity();
                     break;
                 case 0://未投注
                     {
@@ -67,7 +74,7 @@ namespace Ku.Forms.Kit
                     break;
                 case 1://投注成功
                     {
-                        OG1K3Entity entity = OG1K3List.Find(o => o.issueNo == lastBetRecord.IssueNo.ToString());
+                        JJOG1K3Result entity = OG1K3List.Find(o => o.issueNo == lastBetRecord.IssueNo);
                         JJ_BetSingleDAL.Instance.UploadResult(lastBetRecord.IssueNo, entity.daxiao);
 
                         ClearFaileRecord();
@@ -76,7 +83,7 @@ namespace Ku.Forms.Kit
                 case 2://投注失败
                     {
                         betFaileRecordList.Add(lastBetRecord);
-                        OG1K3Entity entity = OG1K3List.Find(o => o.issueNo == lastBetRecord.IssueNo.ToString());
+                        JJOG1K3Result entity = OG1K3List.Find(o => o.issueNo == lastBetRecord.IssueNo);
                         JJ_BetSingleDAL.Instance.UploadResult(lastBetRecord.IssueNo, entity.daxiao);
                         int failCount = GetBetFaileNum();
                         int money = BaseMoney * (failCount * 3);
@@ -108,7 +115,7 @@ namespace Ku.Forms.Kit
                 return 0;
             }
             string codes = lastBetRecord.codes.ToString();
-            OG1K3Entity entity = OG1K3List.Find(o => o.issueNo == prevIssueNo.ToString());
+            JJOG1K3Result entity = OG1K3List.Find(o => o.issueNo == prevIssueNo);
             if (entity != null)
             {
                 if (type == TouzhuTypeEnum.单双)
@@ -152,8 +159,8 @@ namespace Ku.Forms.Kit
         public int GetRepeatTimes(string codes)
         {
             int times = 0;
-            List<OG1K3Entity> rtList = new List<OG1K3Entity>();
-            foreach (OG1K3Entity item in OG1K3List)
+            List<JJOG1K3Result> rtList = new List<JJOG1K3Result>();
+            foreach (JJOG1K3Result item in OG1K3List)
             {
                 if (Type == TouzhuTypeEnum.单双)
                 {

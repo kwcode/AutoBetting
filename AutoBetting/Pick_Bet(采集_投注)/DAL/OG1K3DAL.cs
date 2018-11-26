@@ -30,7 +30,7 @@ namespace Ku.Forms.DAL
         {
             connString = Ku.Common.ConfigHelper.GetConnectionStringValue("ConnString1");
         }
-        public int GetSingle(string issueNo)
+        public int GetSingle(long issueNo)
         {
             object obj = DBHelper.GetSingle(connString, tableName, "count(0)", "  issueNo ={0}", issueNo);
             return Util.ConvertToInt32(obj);

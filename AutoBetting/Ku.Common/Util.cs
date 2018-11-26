@@ -145,7 +145,7 @@ namespace Ku.Common
         public static string ConvertToTrim(object o)
         {
             string inputStt = ConvertToString(o);
-            inputStt = inputStt.Replace("\t", "").Replace(" ", "");
+            //inputStt = inputStt.Replace("\t", "").Replace(" ", "");
             return inputStt.Trim();
         }
         /// <summary>

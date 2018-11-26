@@ -14,6 +14,7 @@ namespace Ku.Common
             Encoding code = Encoding.GetEncoding("gb2312");
 
             string path = AppDomain.CurrentDomain.BaseDirectory + FileName;　//保存文件的路径  
+
             string str = Content;
             StreamWriter sw = null;
             {
@@ -97,8 +98,8 @@ namespace Ku.Common
                 f.Close();
                 f.Dispose();
             }
-            System.IO.StreamWriter f2 = new System.IO.StreamWriter(Path, true, System.Text.Encoding.UTF8);
-            f2.WriteLine(Strings);
+            System.IO.StreamWriter f2 = new System.IO.StreamWriter(Path, false, System.Text.Encoding.UTF8);
+            f2.Write(Strings);
             f2.Close();
             f2.Dispose();
 

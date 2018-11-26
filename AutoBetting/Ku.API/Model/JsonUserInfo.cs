@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ku.Forms.Model
+namespace Ku.API.Model
 {
 
     public class JsonUserInfo
