@@ -13,11 +13,8 @@ namespace Ku.Forms
 {
     public class GrouTask : BaseTask
     {
-        private string connString = string.Empty;
-        JJKit jjKit = new JJKit();
         public override void DoThreadTask()
         {
-            connString = Ku.Common.ConfigHelper.GetConnectionStringValue("ConnString1");
             while (true)
             {
                 try
@@ -38,13 +35,15 @@ namespace Ku.Forms
         private void DoGroupTask()
         {
             string path = System.Windows.Forms.Application.StartupPath + "//config//issueNo.txt";
-            var hisissueNo = Util.ConvertToInt64(FileHelper.ReadFile(path));
-            var issueNo = JJ_一分快三DAL.Instance.GetNewIssueNo(hisissueNo);
+            var hisissueId = Util.ConvertToInt32(FileHelper.ReadFile(path));
 
-            List<JJ_一分快三Entity> topList = JJ_一分快三DAL.Instance.GetTop30(issueNo);
+            var Id = JJ_一分快三DAL.Instance.GetNewId(hisissueId);
+
+            List<JJ_一分快三Entity> topList = JJ_一分快三DAL.Instance.GetTop30(Id);
 
             GoGrouping(topList);
-            FileHelper.WriteFile(path, issueNo.ToString());
+            msg("下期=" + Id.ToString());
+            FileHelper.WriteFile(path, Id.ToString());
         }
 
         private void GoGrouping(List<JJ_一分快三Entity> oG1K3List)
@@ -67,7 +66,10 @@ namespace Ku.Forms
                         int count = daxGroup.Count;
                         foreach (JJ_一分快三Entity item2 in daxGroup)
                         {
-                            Ku.DB.DBHelper.ExecIntResult(connString, "UPDATE JJ_一分快三 SET DXGroup={1} WHERE ID={0}", item2.ID, count);
+                            if (item2.DXGroup != count)
+                            {
+                                JJ_一分快三DAL.Instance.Query("UPDATE JJ_一分快三 SET DXGroup={1} WHERE ID={0}", item2.ID, count);
+                            }
                         }
                         daxGroup = new List<JJ_一分快三Entity>();
                         daxGroup.Add(item);
@@ -93,7 +95,11 @@ namespace Ku.Forms
                         int count = dansGroup.Count;
                         foreach (JJ_一分快三Entity item2 in dansGroup)
                         {
-                            Ku.DB.DBHelper.ExecIntResult(connString, "UPDATE JJ_一分快三 SET DSGroup={1} WHERE ID={0}", item2.ID, count);
+                            if (item2.DSGroup != count)
+                            {
+                                JJ_一分快三DAL.Instance.Query("UPDATE JJ_一分快三 SET DSGroup={1} WHERE ID={0}", item2.ID, count);
+                            }
+
                         }
                         dansGroup = new List<JJ_一分快三Entity>();
                         dansGroup.Add(item);
