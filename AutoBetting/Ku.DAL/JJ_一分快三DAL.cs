@@ -66,21 +66,21 @@ namespace Ku.DAL
         #endregion
 
         #region 获取最新的 期数 如果没有则返回
-        public long GetNewIssueNo(long issueNo)
+        public int GetNewId(int Id)
         {
-            JJ_一分快三Entity entity = GetAnEntity("Id,issueNo", "issueNo>{0}  ORDER BY  issueNo   ASC ", issueNo);
+            JJ_一分快三Entity entity = GetAnEntity("Id,issueNo", "Id>{0}  ORDER BY  Id   ASC ", Id);
             if (entity != null && entity.ID > 0)
             {
-                return entity.issueNo;
+                return entity.ID;
             }
-            else { return issueNo; }
+            else { return Id; }
         }
         #endregion
 
         #region 获取最近的30条
-        public List<JJ_一分快三Entity> GetTop30(long issueNo)
+        public List<JJ_一分快三Entity> GetTop30(int id)
         {
-            return GetList("top 30 *", " issueNo<={0}  ORDER BY  issueNo DESC ", issueNo);
+            return GetList("top 30 *", " id<={0}  ORDER BY  id DESC ", id);
         }
         #endregion
     }
